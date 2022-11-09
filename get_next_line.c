@@ -12,6 +12,13 @@
 
 #include "get_next_line.h"
 
+/*
+ * 1. Check if fd < 0 or BUFFER_SIZE <= 0
+ * 2. read_and_stash()
+ * 3. Check if stash is NULL
+ * 4. extract_line()
+ * 5. clean_stash()
+*/
 char	*get_next_line(int fd)
 {
 	static t_list	*stash = NULL;
@@ -19,10 +26,10 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = NULL;
 	read_and_stash(fd, &stash);
-	if (stash == NULL)
+	if (!stash)
 		return (NULL);
+	line = NULL;
 	extract_line(stash, &line);
 	clean_stash(&stash);
 	if (line[0] == '\0')
@@ -36,27 +43,34 @@ char	*get_next_line(int fd)
 }
 
 /*
- * Read and add to the stash
+ * Read fd and add to the stash
+ *
+ * 2. Allow memory for buf
+ * 3. Read
+ * 4.
+ * 5. add_to_stash()
+ * 6. free buf
 */
 void	read_and_stash(int fd, t_list **stash)
 {
 	char	*buf;
-	int		readed;
+	int		byte_read;
 
-	readed = -1;
-	while (!found_newline(*stash) && readed != 0)
+	byte_read = 1;
+	while (!found_newline(*stash) && byte_read != 0)
 	{
 		buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (buf == NULL)
+		if (!buf)
 			return ;
-		readed = (int)read(fd, buf, BUFFER_SIZE);
-		if ((*stash == NULL && readed == 0) || readed == -1)
+		byte_read = (int)read(fd, buf, BUFFER_SIZE);
+		if ((*stash == NULL && byte_read == 0) || byte_read == -1)
 		{
 			free(buf);
+			buf = 0;
 			return ;
 		}
-		buf[readed] = '\0';
-		add_to_stash(stash, buf, readed);
+		buf[byte_read] = '\0';
+		add_to_stash(stash, buf, byte_read);
 		free(buf);
 	}
 }
@@ -64,7 +78,7 @@ void	read_and_stash(int fd, t_list **stash)
 /*
  * TODO
 */
-void	add_to_stash(t_list **stash, char *buf, int readed)
+void	add_to_stash(t_list **stash, char *buf, int byte_read)
 {
 	int		i;
 	t_list	*last;
@@ -74,11 +88,11 @@ void	add_to_stash(t_list **stash, char *buf, int readed)
 	if (new_node == NULL)
 		return ;
 	new_node->next = NULL;
-	new_node->content = malloc(sizeof(char) * (readed + 1));
+	new_node->content = malloc(sizeof(char) * (byte_read + 1));
 	if (new_node->content == NULL)
 		return ;
 	i = 0;
-	while (buf[i] && i < readed)
+	while (buf[i] && i < byte_read)
 	{
 		new_node->content[i] = buf[i];
 		i++;

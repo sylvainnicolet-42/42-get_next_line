@@ -12,12 +12,21 @@
 
 #include "get_next_line.h"
 
+/*
+ * Return (1) if we find '\n' in the last element of the stash,
+ * otherwise return (0)
+ *
+ * 1. Check if stash is NULL
+ * 2. Get last element of the stash
+ * 3. Iterate through the content
+ * 4. If we find '\n' return (1), otherwise return (0)
+*/
 int	found_newline(t_list *stash)
 {
 	int		i;
 	t_list	*current;
 
-	if (stash == NULL)
+	if (!stash)
 		return (0);
 	current = ft_lst_get_last(stash);
 	i = 0;
@@ -30,16 +39,22 @@ int	found_newline(t_list *stash)
 	return (0);
 }
 
-/* Returns a pointer to the last node in our stash */
+/*
+ * Returns a pointer to the last element of the stash
+ *
+ * 1. Iterate through the stash
+ * 2. Stop if el == NULL or el->next == NULL
+ * 3. Return el
+*/
 
 t_list	*ft_lst_get_last(t_list *stash)
 {
-	t_list	*current;
+	t_list	*el;
 
-	current = stash;
-	while (current && current->next)
-		current = current->next;
-	return (current);
+	el = stash;
+	while (el && el->next)
+		el = el->next;
+	return (el);
 }
 
 /* Calculates the number of chars in the current line, including the trailing
