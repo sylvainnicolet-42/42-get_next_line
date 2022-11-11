@@ -15,22 +15,17 @@
 
 # include "stdlib.h"
 # include "unistd.h"
+# include <stdio.h>
 
-typedef struct s_list
-{
-	char			*content;
-	struct s_list	*next;
-}	t_list;
-
+int		ft_free_read_error(int fd, char **buffer);
+char	*ft_get_line(char **str, char **line);
+void	ft_read_line(int fd, char *buffer, char **str);
 char	*get_next_line(int fd);
-int		found_newline(t_list *stash);
-t_list	*ft_lst_get_last(t_list *stash);
-void	read_and_stash(int fd, t_list **stash);
-void	add_to_stash(t_list **stash, char *buf, int readed);
-void	extract_line(t_list *stash, char **line);
-void	generate_line(char **line, t_list *stash);
-void	clean_stash(t_list **stash);
-int		ft_strlen(const char *str);
-void	free_stash(t_list *stash);
+
+size_t	ft_strlen(char *str);
+char	*ft_strjoin(char *s1, char *s2);
+char	*ft_substr(char *s, unsigned int start, size_t len);
+char	*ft_strdup(char *s1);
+char	*ft_strchr(char *s, int c);
 
 #endif
