@@ -13,124 +13,108 @@
 #include "get_next_line.h"
 
 /**
- * TODO
- * @param int fd (file descriptor)
- * @param char **buffer
- * @return 0 or 1
+ * Return the line from the stash \n
+ * 1. Check if the stash is NULL \n
+ * 2. If there is no newline \n
+ * 		a. Put the stash in the line \n
+ * 		b. Free the stash \n
+ * 		c. Return the line \n
+ * 3. Get newline index \n
+ * 4. Put the stash until newline in the line \n
+ * 5. Update the stash with the rest \n
+ * 6. If the stash == '\0' \n
+ * 		a. Free the stash \n
+ * 7. Return the line \n
+ * @param char **stash
+ * @return char *line or NULL
  */
-int	ft_free_read_error(int fd, char **buffer)
+char	*ft_get_line(char **stash)
 {
-	if (read(fd, *buffer, 0))
-	{
-		free(*buffer);
-		*buffer = 0;
-		return (1);
-	}
-	return (0);
-}
-
-/**
- * TODO
- * @param char **str
- * @param char **line
- * @return char *line
- */
-char	*ft_get_line(char **str, char **line)
-{
-	int		newlinepos;
-	int		len;
+	int		newline_index;
 	char	*tmp;
+	char	*line;
 
-	if (!str || *str == 0)
-		return (0);
-	if (!ft_strchr(*str, '\n'))
+	if (!stash || !*stash)
+		return (NULL);
+	if (!ft_strchr(*stash, '\n'))
 	{
-		*line = ft_substr(*str, 0, ft_strlen(*str));
-		free(*str);
-		*str = 0;
-		return (*line);
+		line = ft_substr(*stash, 0, ft_strlen(*stash));
+		free(*stash);
+		*stash = NULL;
+		return (line);
 	}
-	newlinepos = ft_strlen(ft_strchr(*str, '\n'));
-	len = ft_strlen(*str);
-	*line = ft_substr(*str, 0, len - newlinepos + 1);
-	tmp = *str;
-	*str = ft_substr(ft_strchr(*str, '\n'), 1, len);
+	newline_index = ft_strlen(*stash) - ft_strlen(ft_strchr(*stash, '\n') + 1);
+	line = ft_substr(*stash, 0, newline_index);
+	tmp = *stash;
+	*stash = ft_substr(ft_strchr(*stash, '\n'), 1, ft_strlen(*stash));
 	free(tmp);
-	if (**str == '\0')
+	tmp = NULL;
+	if (**stash == '\0')
 	{
-		free(*str);
-		*str = 0;
+		free(*stash);
+		*stash = NULL;
 	}
-	return (*line);
+	return (line);
 }
 
-// Lit le fichier jusqu'à trouver un newline dans le buffer
-// et retourne ce qui a été lu
-// Retourne NULL si rien n'est trouvé
-
 /**
- * TODO
+ * Read fd until finding newline in the buffer \n
+ * 1. Check error if we read fd \n
+ * 2. Read fd a first time + add in the buffer \n
+ * 3. While bytes_read > 0 \n
+ * 		a. If the stash is empty, put the buffer in \n
+ * 		   Else, put the buffer at the end of the stash \n
+ * 		b. If we find newline in the buffer, break \n
+ * 		c. Read fd + add in the buffer \n
+ * 4. Free the buffer \n
  * @param int fd (file descriptor)
  * @param char *buffer
- * @param char **str
+ * @param char **stash
  */
-void	ft_read_line(int fd, char *buffer, char **str)
+void	ft_read_line(int fd, char *buffer, char **stash)
 {
-	int		rd;
-	char	*tmp;
+	int		bytes_read;
 
-	if (ft_free_read_error(fd, &buffer))
-		return ;
-	rd = read(fd, buffer, BUFFER_SIZE);
-	buffer[rd] = '\0';
-	while (rd > 0)
+	bytes_read = read(fd, buffer, BUFFER_SIZE);
+	buffer[bytes_read] = '\0';
+	while (bytes_read > 0)
 	{
-		if (!*str)
-			*str = ft_substr(buffer, 0, rd);
+		if (!*stash)
+			*stash = ft_substr(buffer, 0, bytes_read);
 		else
-		{
-			tmp = *str;
-			*str = ft_strjoin(*str, buffer);
-			free(tmp);
-		}
+			*stash = ft_strjoin(*stash, buffer);
 		if (ft_strchr(buffer, '\n') > 0)
 			break ;
-		rd = read(fd, buffer, BUFFER_SIZE);
-		buffer[rd] = '\0';
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		buffer[bytes_read] = '\0';
 	}
 	free(buffer);
+	buffer = NULL;
 }
 
-/* get_next_line prend en valeur un descripteur de fichier,
- * lit une ligne et retourne la ligne lue.
- * la fonction retourne NULL en cas d'erreur ou il ne reste
- * plus aucune ligne.
- **/
-
 /**
- * TODO
+ * Return the first line of file descriptor fd
  * @param int fd (file descriptor)
- * @return TODO
+ * @return char *line or NULL
  */
 char	*get_next_line(int fd)
 {
 	static char	*stash = NULL;
 	char		*buffer;
-	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
 		free(stash);
-		stash = 0;
+		stash = NULL;
 		return (NULL);
 	}
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 	{
 		free(buffer);
+		buffer = NULL;
 		return (NULL);
 	}
 	ft_read_line(fd, buffer, &stash);
-	line = ft_get_line(&stash, &line);
-	return (line);
+	return (ft_get_line(&stash));
 }

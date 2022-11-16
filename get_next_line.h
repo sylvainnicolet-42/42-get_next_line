@@ -17,9 +17,8 @@
 # include "unistd.h"
 # include "stdio.h"
 
-int		ft_free_read_error(int fd, char **buffer);
-char	*ft_get_line(char **str, char **line);
-void	ft_read_line(int fd, char *buffer, char **str);
+char	*ft_get_line(char **stash);
+void	ft_read_line(int fd, char *buffer, char **stash);
 char	*get_next_line(int fd);
 
 size_t	ft_strlen(char *str);
