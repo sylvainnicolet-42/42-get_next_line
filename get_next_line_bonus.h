@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: synicole <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/29 14:32:51 by synicole          #+#    #+#             */
-/*   Updated: 2022/10/29 14:32:59 by synicole         ###   ########.fr       */
+/*   Created: 2022/11/16 18:01:04 by synicole          #+#    #+#             */
+/*   Updated: 2022/11/16 18:01:08 by synicole         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include "stdlib.h"
 # include "unistd.h"
 # include "stdio.h"
+# include "limits.h"
 
 char	*ft_get_line(char **stash);
 void	ft_read_line(int fd, char *buffer, char **stash);
