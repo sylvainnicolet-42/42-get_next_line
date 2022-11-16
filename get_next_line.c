@@ -12,9 +12,12 @@
 
 #include "get_next_line.h"
 
-#include "get_next_line.h"
-#include <stdio.h>
-
+/**
+ * TODO
+ * @param int fd (file descriptor)
+ * @param char **buffer
+ * @return 0 or 1
+ */
 int	ft_free_read_error(int fd, char **buffer)
 {
 	if (read(fd, *buffer, 0))
@@ -26,6 +29,12 @@ int	ft_free_read_error(int fd, char **buffer)
 	return (0);
 }
 
+/**
+ * TODO
+ * @param char **str
+ * @param char **line
+ * @return char *line
+ */
 char	*ft_get_line(char **str, char **line)
 {
 	int		newlinepos;
@@ -59,6 +68,12 @@ char	*ft_get_line(char **str, char **line)
 // et retourne ce qui a été lu
 // Retourne NULL si rien n'est trouvé
 
+/**
+ * TODO
+ * @param int fd (file descriptor)
+ * @param char *buffer
+ * @param char **str
+ */
 void	ft_read_line(int fd, char *buffer, char **str)
 {
 	int		rd;
@@ -86,31 +101,36 @@ void	ft_read_line(int fd, char *buffer, char **str)
 	free(buffer);
 }
 
-//ret = read(fd, buf, buf_size)
-//buf should be buf_size+1
-//buf[ret] = '\0';
-
 /* get_next_line prend en valeur un descripteur de fichier,
  * lit une ligne et retourne la ligne lue.
  * la fonction retourne NULL en cas d'erreur ou il ne reste
- * plus aucune ligne. */
+ * plus aucune ligne.
+ **/
 
+/**
+ * TODO
+ * @param int fd (file descriptor)
+ * @return TODO
+ */
 char	*get_next_line(int fd)
 {
+	static char	*stash = NULL;
 	char		*buffer;
-	static char	*str = NULL;
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	{
+		free(stash);
+		stash = 0;
 		return (NULL);
+	}
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 	{
 		free(buffer);
-		buffer = 0;
 		return (NULL);
 	}
-	ft_read_line(fd, buffer, &str);
-	line = ft_get_line(&str, &line);
+	ft_read_line(fd, buffer, &stash);
+	line = ft_get_line(&stash, &line);
 	return (line);
 }

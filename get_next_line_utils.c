@@ -12,6 +12,11 @@
 
 #include "get_next_line.h"
 
+/**
+ * Return the length of string str
+ * @param char *str
+ * @return size_t len
+ */
 size_t	ft_strlen(char *str)
 {
 	size_t	i;
@@ -22,6 +27,12 @@ size_t	ft_strlen(char *str)
 	return (i);
 }
 
+/**
+ * Return the concatenation of string s1 and s2
+ * @param char *s1
+ * @param char *s2
+ * @return char *concatenation_s1_s2 or NULL
+ */
 char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*str;
@@ -47,6 +58,13 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (str);
 }
 
+/**
+ * Return a part of string s
+ * @param char *s
+ * @param unsigned int start
+ * @param size_t len
+ * @return char *part_s or NULL
+ */
 char	*ft_substr(char *s, unsigned int start, size_t len)
 {
 	char	*ptr;
@@ -75,6 +93,11 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	return (ptr);
 }
 
+/**
+ * Return a copy of the string s1
+ * @param char *s1
+ * @return char *copy_s1 or NULL
+ */
 char	*ft_strdup(char *s1)
 {
 	char	*str;
@@ -93,6 +116,14 @@ char	*ft_strdup(char *s1)
 	return (str);
 }
 
+/**
+ * Locates the first occurrence of c in the string s
+ * and return a pointer to the located character,
+ * or NULL if the character does not appear in the string.
+ * @param char *s
+ * @param int c
+ * @return char *located_character or NULL
+ */
 char	*ft_strchr(char *s, int c)
 {
 	int	i;
